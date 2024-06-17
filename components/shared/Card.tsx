@@ -33,4 +33,4 @@ const Card = ({event, hasOrderLink, hidePrice}: CardProps) => {
   )
 }
 
-export default Card
+export default Card;

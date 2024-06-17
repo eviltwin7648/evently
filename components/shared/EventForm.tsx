@@ -186,7 +186,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
-            name="stardDateTime"
+            name="startDateTime"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
