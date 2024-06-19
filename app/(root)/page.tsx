@@ -14,7 +14,7 @@ export default async function  Home() {
       category: "",
     }
   )
-  console.log(events)
+
 
   return (
    <>

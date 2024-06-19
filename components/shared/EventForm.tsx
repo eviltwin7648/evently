@@ -25,16 +25,26 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Checkbox } from "../ui/checkbox";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useRouter } from "next/navigation";
-import { createEvent } from "@/lib/actions/event.actions";
+import { createEvent, updateEvent } from "@/lib/actions/event.actions";
+import { IEvents } from "@/lib/database/models/event.model";
 
 type EventFormProps = {
   userId: string;
   type: "Create" | "Update";
+  event?: IEvents;
+  eventId?: string;
 };
 
-const EventForm = ({ userId, type }: EventFormProps) => {
+const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const initialValues = eventDefaultValues;
+  const initialValues =
+    event && type === "Update"
+      ? {
+          ...event,
+          startDateTime: new Date(event.startDateTime),
+          endDateTime: new Date(event.endDateTime),
+        }
+      : eventDefaultValues;
   const router = useRouter();
 
   const { startUpload } = useUploadThing("imageUploader");
@@ -63,15 +73,32 @@ const EventForm = ({ userId, type }: EventFormProps) => {
       try {
         const newEvent = await createEvent({
           event: { ...values, imageUrl: uploadImageUrl },
-          userId, path:'/profile'
-        })
-        
-        if(newEvent){
+          userId,
+          path: "/profile",
+        });
+
+        if (newEvent) {
           form.reset();
-          router.push(`/events/${newEvent._id}`)
+          router.push(`/events/${newEvent._id}`);
         }
-        
-        ;
+      } catch (error) {}
+    }
+    if (type === "Update") {
+      if(!eventId){
+        router.back()
+        return;
+      }
+      try {
+        const updatedEvent = await updateEvent({
+          event: { ...values, imageUrl: uploadImageUrl, _id:eventId },
+          userId,
+          path: `/events/$${eventId}`,
+        });
+
+        if (updatedEvent) {
+          form.reset();
+          router.push(`/events/${updatedEvent._id}`);
+        }
       } catch (error) {}
     }
   }
@@ -251,7 +278,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
           />
         </div>
 
-        <div className="flex flex-col gap-5 mdLflex-row">
+        <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
             name="price"
