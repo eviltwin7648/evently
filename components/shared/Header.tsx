@@ -11,10 +11,11 @@ const Header = () => {
         <div className="wrapper flex items-centre justify-between">
             <Link href="/" className="w-36">
                 <Image
-                src="/assets/images/logo.svg"
-                width={128}
-                height={38}
+                src="/assets/icons/ticketsphere.svg"
+                width={2000}
+                height={2000}
                 alt="Evently logo"
+                className="h-[40px]"
                 />
             </Link>
 
